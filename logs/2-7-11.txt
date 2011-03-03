@@ -1,0 +1,9 @@
+2-7-2011
+
+Everything has been ready to go for a week now. I'm starting to develop
+the structure for the File Browser in preparation for porting it into the
+Qt framework. 
+
+So far, I've gotten the main window, and modularized the file menu and
+status bar elements into their own classes. This actually took longer than
+I anticipated, because of the signal-slot structure here. 

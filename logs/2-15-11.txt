@@ -1,0 +1,7 @@
+2-15-2011
+
+Finished getting the rest of the examples in. Relocated the grid and axis unit checkboxes to new view menu.
+
+Todo: Load to file menu, qthread loading, plot behavior. Will try to add a resizeable sidebar widget for
+additional file info. Need to get nodes clickable with relavent actions. Node re-ordering mechanism for 
+visual clarity.

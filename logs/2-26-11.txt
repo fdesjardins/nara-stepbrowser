@@ -1,0 +1,26 @@
+2-26-2011
+
+Spent two days working on making movable nodes. Almost there, just having an axes clearing problem.
+Nodes are smart enough to know when they're being clicked now and can perform actions based on the button
+used.
+
+----- a few hours later ----- 
+
+Got node movement working. Fixed grid drawing bug, and co-occurence not setting correct step_path.
+Nodes also present their names to the status bar when hovered over.
+
+Got some weird behavior for a while, before I realized I should disconnect the mpl_connections for 
+the draggableNodes. They were eating up cpu cycles and holding memory references so the gc wasn't
+cleaning them up properly. Adding a simple destructor to perform these disconnects seems to have 
+done the trick. 
+
+TODO:
+
+2) Implement a context menu for nodes
+3) Dynamic adjustment of node size multiplier
+
+4) Console dialog window
+5) "Load" into file menu
+6) Sidepane
+
+7) Make breadcrumb smarter regarding window width

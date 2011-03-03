@@ -1,0 +1,13 @@
+I need to get context graph working. Currently has some dependency conflicts on my system. 
+
+
+
+-- From Word Doc -- 
+
+Co-occurrence is a relatively weak criterion for determining file relations. It is more accurate to consider co-occurrence as a measure of document similarity. It is not always the case that related documents are similar.
+
+Interactivity would be a useful feature of future visualization development.
+It may be useful, for instance, to explore the nature of edges between nodes. 
+In our case, this would permit the user to see which terms occurred in both documents. 
+
+It would also be helpful to permit the user to rearrange the nodes of the graph to impose a different layout on the graph, or to incorporate some prior knowledge the user may have of the data.

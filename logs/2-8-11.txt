@@ -1,0 +1,8 @@
+2-8-2011
+
+Finished excising the menu and status bar, and they are now working together
+fine using a clever lambda function as a slot. 
+
+Am now exporting the matplotlib and networkx routines into their own classes/widgets.
+Seems to be more straight-forward than I figured it would be. Should have the pyplot
+in the same state as the qt_graph_test demo by today.

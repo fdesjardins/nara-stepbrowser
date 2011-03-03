@@ -1,0 +1,12 @@
+2-9-2011
+
+Spent today getting the examples to draw inside a Qt canvas. The graphtest and graphtestnumpy
+examples are working. Cleaned up some interface elements, and got grid, and save plot working.
+
+Using a combo box to select examples, currently.
+
+Also, researched features that may be useful, such as artist picker (allows picking nodes). 
+
+Todo: Get the examples in proper classes and call them from the matPlotFrame object during the
+on_draw method. Get the STEP loading procedure in a QThread and hook it up to the status_bar
+for loading progress.

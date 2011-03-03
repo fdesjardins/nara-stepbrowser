@@ -1,0 +1,23 @@
+2-19-2011
+
+Finalized step_path alteration/initialization scheme, and began designing
+a breadcrumb widget to use in conjunction with a small directory
+navigation pane.
+
+Fixed bug where grid was not getting drawn every time it should. 
+Added fullscreen. Organized project file structure.
+
+TODO: 
+
+1) Get nodes selectable, and movable
+2) Implement a context menu for nodes
+3) Dynamic adjustment of node size multiplier
+
+4) Console dialog window
+5) "Load" into file menu
+6) Sidepane
+
+7) Make breadcrumb smarter regarding window width
+
+
+
