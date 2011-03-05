@@ -1,0 +1,12 @@
+3-2-2011
+
+Rudimentary context menu is working for nodes. Will add the 
+same mechanism for edges. 
+
+TODO:
+
+1a) Explicit Clustering
+1b) Clustering Configuration Dialog
+
+2) Dynamic node size mult
+3) Get node improvements into other graphs
