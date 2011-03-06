@@ -2,10 +2,10 @@ function [ output_args ] = demo( input_args )
 %DEMO Summary of this function goes here
 %   Detailed explanation goes here
 
-    n = 2000;
+    n = 10;
 
     x = randperm(n); 
-    gs = 750; 
+    gs = 3; 
     group1 = x(1:gs); 
     group2 = x(gs+1:end);
     
@@ -23,9 +23,13 @@ function [ output_args ] = demo( input_args )
     figure;
     imagesc(A);
 
-    L = laplacian(A); 
-    [V D] = eigs(L, 2, 'SA'); 
-    [ignore p] = sort(V(:,2)); 
+    L = laplacian(A);
+	[V D] = eig(L);
+	D
+	[V D] = eigs(L);
+    [V D] = eigs(L, 2, 'SA');
+	D
+    [ignore p] = sort(V(:,2))
     
     figure;
     imagesc(A(p,p));
@@ -33,7 +37,6 @@ end
 
 
 function L = laplacian(A)
-
     L = diag(sum(A,2)) - A;
     
     %n = size(A,1)

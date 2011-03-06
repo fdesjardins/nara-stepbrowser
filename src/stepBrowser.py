@@ -27,14 +27,12 @@ class StepBrowser(QtGui.QWidget):
 
         #Create Widgets
         self.status_bar = BrowserStatusBar(self)
-        self.address_bar = BrowserAddressBar(self)
         self.matplot_frame = BrowserMatPlotFrame(self)
         self.menu_bar = BrowserMenuBar(self)
         
         #Create Layout
         vbox = QtGui.QVBoxLayout(self)
         vbox.addWidget(self.menu_bar)
-        vbox.addWidget(self.address_bar)
         vbox.addWidget(self.matplot_frame)
         vbox.addWidget(self.status_bar)
         self.setLayout(vbox)
@@ -82,7 +80,6 @@ mollit anim id est laborum.
 
     def set_step_path(self, path):
         self.step_path = path
-        self.address_bar.set_address(path)
         self.status_bar.showMessage("STEP directory changed to %s" % path, 2500)
 
         

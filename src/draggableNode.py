@@ -1,8 +1,15 @@
 #/usr/bin/env python
 
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QMenu, QCursor
+from PyQt4.QtCore import QPoint, QString
+
+from contextMenu import *
+
 class DraggableNode(object):
     def __init__(self, parent, name, node_num = None):
         self.parent = parent
+        self.frame = self.parent.parent
         self.name = name
         self.node_num = node_num
         self.press = None
@@ -26,9 +33,9 @@ class DraggableNode(object):
                     if str(obj['ind'][0]) == str(self.node_num):
                         print 'Twas me!:', self.name
                         if event.button == 3:
-                            self.context_menu(self.name)
+                            self.context_menu() #popup menu on right mouseclick
                         if event.button == 2:
-                            self.press = event.xdata, event.ydata
+                            self.press = event.xdata, event.ydata #save coords for node movement
 
     def on_motion(self, event):
         collection = self.parent.get_artist(self.parent)
@@ -54,8 +61,9 @@ class DraggableNode(object):
         self.press = None
         self.parent.redraw(self.parent)
 
-    def context_menu(self, node_name):
-        msg = 'Name:' + str(self.name)
+    def context_menu(self):
+        cm = ContextMenu(self.name, self)
+        cm.popup(QCursor.pos())
 
     def disconnect(self, node):
         node.parent.fig.canvas.mpl_disconnect(node.cidpress)
