@@ -1,0 +1,10 @@
+3-5-2011
+
+Spent most of my time today porting over the Matlab file Dr. McGraw
+gave me on Friday into Python. It has not been exactly straightforward,
+mainly because Python lacks the intuitive syntax for manipulating
+arrays/matrices that Matlab has.
+
+In addition, the graphing needs to be coded manually, and there is no
+eigs function available in numpy or scipy, so I'll have to do that
+manually as well. Should finish it tomorrow or Monday.
