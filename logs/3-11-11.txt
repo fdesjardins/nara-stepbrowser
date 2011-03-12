@@ -1,0 +1,21 @@
+3-11-2011
+3-12-2011
+
+Dynamic node size multiplier is in and working.
+
+Migrated all new features into hierarchy graph. Fixed performance issue
+involving node movement. Dynamic node label display is now available.
+
+Opening files from the context menu now also works on Linux. Will adjust
+for compatibility before next commit.
+
+Entry to set STEP directory added to file menu.
+
+TODO:
+
+1a) Finish explicit clustering
+1b) Clustering configuration dialog
+
+2) Get new features into co-occurence and context graphs
+3) Improve node sizing
+4) Console dialog

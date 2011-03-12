@@ -11,21 +11,26 @@ class BrowserMenuBar(QtGui.QMenuBar):
         #File Menu
         file_menu = self.addMenu("&File")
         save_file_action = self.create_action("&Save Plot", "Ctrl+S", "Save plot as image file", slot = parent.save_plot)
+        set_dir_action = self.create_action("Set STEP &Directory", "Ctrl+D", "Change to a directory containing STEP files", slot = parent.set_directory)
         quit_file_action = self.create_action("&Quit", "Ctrl+Q", "Close the STEP file browser", slot = parent.close)
         file_menu.addAction(save_file_action)
+        file_menu.addAction(set_dir_action)
         file_menu.addAction(quit_file_action)
 
         #View Menu
         view_menu = self.addMenu("&View")
-        show_fullscreen_action = self.create_action("Show &Fullscreen", "Ctrl+F", "Show the browser in full screen mode",
+        fullscreen_action = self.create_action("&Fullscreen", "Ctrl+F", "Show the browser in full screen mode",
                                                     slot = parent.toggle_fullscreen, checkable = True)
-        show_grid_view_action = self.create_action("Show &Grid", "Ctrl+G", "Show gridlines on the current plot", 
+        grid_view_action = self.create_action("&Grid", "Ctrl+G", "Show gridlines on the current plot", 
                                                    slot = parent.matplot_frame.draw_grid, checkable = True)
-        show_axis_units_view_action = self.create_action("Show &Axis Units", "Ctrl+A", "Show axis units on the current plot",
+        axis_units_view_action = self.create_action("&Axis Units", "Ctrl+A", "Show axis units on the current plot",
                                                          slot = parent.matplot_frame.toggle_axis_units, checkable = True)
-        view_menu.addAction(show_fullscreen_action)
-        view_menu.addAction(show_grid_view_action)
-        view_menu.addAction(show_axis_units_view_action)
+        node_labels_view_action = self.create_action("Node &Labels", "Ctrl+L", "Show node labels on the current plot",
+                                                         slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        view_menu.addAction(fullscreen_action)
+        view_menu.addAction(grid_view_action)
+        view_menu.addAction(axis_units_view_action)
+        view_menu.addAction(node_labels_view_action)
         
         #Dialogs Menu
         #dialogs_menu = self.addMenu("&Dialogs")

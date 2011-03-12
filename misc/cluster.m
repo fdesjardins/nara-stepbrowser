@@ -2,7 +2,7 @@ function [ output_args ] = demo( input_args )
 %DEMO Summary of this function goes here
 %   Detailed explanation goes here
 
-    n = 10;
+    n = 4000;
 
     x = randperm(n); 
     gs = 3; 
@@ -25,10 +25,8 @@ function [ output_args ] = demo( input_args )
 
     L = laplacian(A);
 	[V D] = eig(L);
-	D
 	[V D] = eigs(L);
     [V D] = eigs(L, 2, 'SA');
-	D
     [ignore p] = sort(V(:,2))
     
     figure;

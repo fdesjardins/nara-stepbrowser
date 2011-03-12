@@ -37,7 +37,6 @@ class StepBrowser(QtGui.QWidget):
         vbox.addWidget(self.status_bar)
         self.setLayout(vbox)
 
-        
     def about(self):
         msg = '''
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod 
@@ -49,7 +48,6 @@ sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
 mollit anim id est laborum.
 '''
         QMessageBox.about(self, "About the Step File Browser", msg.strip())
-
 
     def manual(self):
         msg = '''
@@ -63,6 +61,8 @@ mollit anim id est laborum.
 '''
         QMessageBox.about(self, "Manual for Step File Browser", msg.strip())
 
+    def open_file(self, f):
+        os.system('gedit ' + self.step_path + '/' + f)
 
     def save_plot(self):
         file_choices = "PNG (*.png)|*.png"
@@ -77,12 +77,17 @@ mollit anim id est laborum.
             canvas.print_figure(path, dpi=mydpi) #save file
             self.status_bar.showMessage('Saved to %s' % path, 2500)
 
+    def set_directory(self):
+        filedialog = QtGui.QFileDialog()
+        tmp = filedialog.getExistingDirectory(None, 'Open Directory', '')
+        self.set_step_path(str(tmp))
+        os.chdir(self.step_path)
 
     def set_step_path(self, path):
         self.step_path = path
+        self.matplot_frame.step_path = path
         self.status_bar.showMessage("STEP directory changed to %s" % path, 2500)
 
-        
     def toggle_fullscreen(self):
         if self.isFullScreen():
             self.showNormal()

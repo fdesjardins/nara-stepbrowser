@@ -14,8 +14,8 @@ class ContextMenu(QtGui.QMenu):
 
         open_action = self.create_action("&Open ", tip = "Open " + node_name + " using the default application.", 
                                          slot = (lambda x=node_name: self.parent.open_file(x)))
+        
         self.addAction(open_action)
-
         self.sizeHint()
 
 

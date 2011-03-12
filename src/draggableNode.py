@@ -34,7 +34,7 @@ class DraggableNode(object):
                         print 'Twas me!:', self.name
                         if event.button == 3:
                             self.context_menu() #popup menu on right mouseclick
-                        if event.button == 2:
+                        if event.button == 1:
                             self.press = event.xdata, event.ydata #save coords for node movement
 
     def on_motion(self, event):
@@ -59,7 +59,6 @@ class DraggableNode(object):
                     
     def on_release(self, event):
         self.press = None
-        self.parent.redraw(self.parent)
 
     def context_menu(self):
         cm = ContextMenu(self.name, self)

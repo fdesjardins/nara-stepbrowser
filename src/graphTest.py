@@ -15,6 +15,7 @@ class GraphTest(object):
         self.status_bar = parent.status_bar
         self.axes = parent.axes
         self.fig = parent.fig
+        self.node_size_mult = 700
         
         self.g = NX.Graph()
 
@@ -41,8 +42,8 @@ class GraphTest(object):
         for o in self.objs:
             o.set_node_num(o, nodelist.index(o.name))
 
-        scaled_node_size = lambda(node) : NX.degree(self.g, node) * 700
-        self.artist = self.axes.scatter(xy[:,0], xy[:,1], s=300)
+        scaled_node_size = lambda(node) : NX.degree(self.g, node) * self.node_size_mult
+        self.artist = self.axes.scatter(xy[:,0], xy[:,1], self.node_size_mult)
         self.edges = NX.draw_networkx_edges(self.g, self.pos, ax=self.axes)
 
     def destruct(parent, self):
@@ -51,6 +52,11 @@ class GraphTest(object):
 
     def get_artist(child, self):
         return self.artist
+
+    def set_node_mult(self, mult):
+        self.node_size_mult = (mult/100.0)*1500 + 100
+        self.status_bar.showMessage('Node Size Multiplier: '+str(self.node_size_mult), 2500)
+        self.redraw(self)
 
     def redraw(caller, self):
 
@@ -68,7 +74,7 @@ class GraphTest(object):
         except ValueError:
             raise nx.NetworkXError('Bad value in node positions.')
 
-        self.artist = self.axes.scatter(xy[:,0], xy[:,1], s=300)
+        self.artist = self.axes.scatter(xy[:,0], xy[:,1], self.node_size_mult)
         self.edges = NX.draw_networkx_edges(self.g, self.pos, ax=self.axes)
 
         self.axes.set_xlim(x1,x2)
@@ -94,7 +100,7 @@ class GraphTestOld(object):
         self.parent.axes.set_axis_off()
         nodes = self.g.nodes()
         print nodes
-                #dnodes = [DraggableNode(node) for node in nodes]
+        #dnodes = [DraggableNode(node) for node in nodes]
 
         scaled_node_size = lambda(node) : NX.degree(self.g, node) * 700
         self.artist = NX.draw_networkx_nodes(self.g, pos, ax=self.parent.axes, nodelist=nodes, node_shape='^')

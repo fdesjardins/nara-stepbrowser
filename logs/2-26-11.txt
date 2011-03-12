@@ -1,8 +1,7 @@
 2-26-2011
 
 Spent two days working on making movable nodes. Almost there, just having an axes clearing problem.
-Nodes are smart enough to know when they're being clicked now and can perform actions based on the button
-used.
+Nodes are smart enough to know when they're being clicked now and can perform actions based on the button used.
 
 ----- a few hours later ----- 
 

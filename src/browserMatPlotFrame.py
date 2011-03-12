@@ -22,6 +22,7 @@ import networkx as NX
 from graphTest import *
 from graphTestNumpy import *
 from graphHierarchy import *
+from graphHierarchy1 import *
 from graphCoOccurence import *
 #from graphContext import *
 
@@ -33,6 +34,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.status_bar = parent.status_bar
 
         #State
+        self.draw_node_labels_tf = False
         self.draw_axis_units_tf = False
         self.draw_grid_tf = False
         self.g = None
@@ -61,6 +63,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.mode_combo.addItems(["Graph Test", 
                                   "Graph Test Numpy", 
                                   "STEP Hierarchy", 
+                                  "STEP Hierarchy1", 
                                   "STEP Co-occurence", 
                                   "STEP Context"])
         self.mode_combo.setMinimumWidth(200)
@@ -74,7 +77,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.slider.setValue(20)
         self.slider.setTracking(True)
         self.slider.setTickPosition(QSlider.TicksBothSides)
-        #self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.on_draw)
+        # slider connection set in on_draw() method
 
         #Horizontal layout
         hbox = QtGui.QHBoxLayout()
@@ -91,7 +94,6 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
-
         
     def draw_axis_units(self):
 
@@ -108,7 +110,6 @@ class BrowserMatPlotFrame(QtGui.QWidget):
 
         self.canvas.draw()
 
-
     def draw_grid(self):
         if self.draw_grid_tf == False:
             self.draw_grid_tf = True
@@ -117,8 +118,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             
         self.axes.grid(self.draw_grid_tf)
         self.canvas.draw()
-		
-		
+			
     def on_draw(self): 
         draw_mode = self.mode_combo.currentText()
         
@@ -134,9 +134,12 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.g = GraphTestNumPy(self)
         elif draw_mode == "STEP Hierarchy":
             self.g = GraphHierarchy(self)
+        elif draw_mode == "STEP Hierarchy1":
+            self.g = GraphHierarchy1(self)
         elif draw_mode == "STEP Co-occurence":
             self.g = GraphCoOccurence(self)
-        
+
+        self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.g.set_node_mult)       
         self.axes.grid(self.draw_grid_tf)
         self.canvas.draw()
         
@@ -155,5 +158,11 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.draw_axis_units_tf = True
         else:
             self.draw_axis_units_tf = False
-
         self.draw_axis_units()
+
+    def toggle_node_labels(self):
+        if self.draw_node_labels_tf == False: 
+            self.draw_node_labels_tf = True
+        else:
+            self.draw_node_labels_tf = False
+        self.g.redraw(self.g)
