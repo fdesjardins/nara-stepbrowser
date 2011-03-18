@@ -51,13 +51,17 @@ mollit anim id est laborum.
 
     def manual(self):
         msg = '''
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod 
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim 
-veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
-ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur 
-sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
-mollit anim id est laborum.
+The STEP file browser allows you to visualize the hierarchical 
+structure of mechanical assemblies represented using STEP files. 
+
+Select a representation in the drop-down box in the bottom-left 
+corner, and press the draw button. 
+
+Now, you can move nodes using the left mouse button, and open a 
+context menu using the right mouse button. 
+
+Transformations may be applied using the matplotlib navigation toolbar 
+below the plotting area.
 '''
         QMessageBox.about(self, "Manual for Step File Browser", msg.strip())
 

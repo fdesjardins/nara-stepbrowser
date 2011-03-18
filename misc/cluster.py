@@ -1,6 +1,6 @@
 import numpy, scipy
 from numpy import random, array, triu, linalg
-from scipy import zeros
+from scipy.sparse.linalg import eigs
 
 from decimal import Decimal
 
@@ -31,20 +31,36 @@ def main():
     
     L = laplacian(A);
 
-    V, D = eigs(L, 2, 'SA')
+    D,V = eigs(L, k=2, which='SR')
 
-def eigs(L, k, sigma):
+    V2 = [x[1] for x in V]
+    _sorted = [x[1] for x in V]
+    _sorted.sort()
 
-    [V,D] = linalg.eig(L)
+    ind = [V2.index(x) for x in _sorted]
+    
+    V_jump = [V[x] for x in ind]
+    
+    for x in V_jump: print x
 
-    if sigma == 'SA':
-        x = range(0, len(D[0]))
-        lst = []
-        for r,c in zip(x,x):
-            lst.append(D[r][c])
+# def eigs(L, k, sigma):
 
-        lst.sort()
-        return 0, numpy.diag(lst[:k])
+#     D,V = linalg.eig(L)
+#     print V
+#     print D
+#     D_out = 0
+
+#     if sigma == 'SA':
+#         x = range(0, len(V[0]))
+#         lst = []
+#         for r,c in zip(x,x):
+#             lst.append(V[r][c])
+
+#         lst.sort()
+        
+#         V_out = numpy.diag(lst[:k])
+
+#         return V_out, D_out
 
 def _blob(x,y,area,color):
     hs = numpy.sqrt(area) / 2
@@ -122,6 +138,17 @@ def pprint(mat):
             out += str(c) + '\t'
         out += '\n'
     print out
+
+def sa_sort(lst):
+    
+    out = []
+    for i in xrange(len(lst)):
+        tmp = lst[0]
+        for j in lst:
+            if j**2 < tmp**2:
+                tmp = j
+        out.append(j)
+    return out
 
 if __name__ == '__main__':
     main()

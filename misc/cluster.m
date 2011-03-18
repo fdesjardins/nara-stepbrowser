@@ -2,10 +2,10 @@ function [ output_args ] = demo( input_args )
 %DEMO Summary of this function goes here
 %   Detailed explanation goes here
 
-    n = 4000;
+    n = 100;
 
     x = randperm(n); 
-    gs = 3; 
+    gs = 35; 
     group1 = x(1:gs); 
     group2 = x(gs+1:end);
     
@@ -20,21 +20,25 @@ function [ output_args ] = demo( input_args )
     A = triu(A,1);
     A = A + A';
     
-    figure;
-    imagesc(A);
+    %figure;
+    %imagesc(A);
 
-    L = laplacian(A);
+    L = laplacian(A); 
 	[V D] = eig(L);
-	[V D] = eigs(L);
-    [V D] = eigs(L, 2, 'SA');
-    [ignore p] = sort(V(:,2))
+
+    [V D] = eigs(L, 2, 'SA'); 
+    [ignore p] = sort(V(:,2));
+	V(p)
+    %figure;
+    %plot(V(p));
     
-    figure;
-    imagesc(A(p,p));
+    %figure;
+    %imagesc(A(p,p));
 end
 
 
 function L = laplacian(A)
+
     L = diag(sum(A,2)) - A;
     
     %n = size(A,1)

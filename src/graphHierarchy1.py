@@ -20,7 +20,6 @@ class GraphHierarchy1(object):
         self.node_size_mult = 700
 
         # Dialog for step directory if not set
-        print self.parent.step_path
         if self.parent.step_path == None:
             filedialog = QtGui.QFileDialog()
             tmp = filedialog.getExistingDirectory(None, 'Open Directory', '')

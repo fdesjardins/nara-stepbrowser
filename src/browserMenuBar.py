@@ -10,16 +10,16 @@ class BrowserMenuBar(QtGui.QMenuBar):
 
         #File Menu
         file_menu = self.addMenu("&File")
+        open_action = self.create_action("&Open...", "Ctrl+D", "Open a directory containing STEP files", slot = parent.set_directory)
         save_file_action = self.create_action("&Save Plot", "Ctrl+S", "Save plot as image file", slot = parent.save_plot)
-        set_dir_action = self.create_action("Set STEP &Directory", "Ctrl+D", "Change to a directory containing STEP files", slot = parent.set_directory)
         quit_file_action = self.create_action("&Quit", "Ctrl+Q", "Close the STEP file browser", slot = parent.close)
+        file_menu.addAction(open_action)
         file_menu.addAction(save_file_action)
-        file_menu.addAction(set_dir_action)
         file_menu.addAction(quit_file_action)
 
         #View Menu
         view_menu = self.addMenu("&View")
-        fullscreen_action = self.create_action("&Fullscreen", "Ctrl+F", "Show the browser in full screen mode",
+        fullscreen_action = self.create_action("&Full Screen", "Ctrl+F", "Show the browser in full screen mode",
                                                     slot = parent.toggle_fullscreen, checkable = True)
         grid_view_action = self.create_action("&Grid", "Ctrl+G", "Show gridlines on the current plot", 
                                                    slot = parent.matplot_frame.draw_grid, checkable = True)

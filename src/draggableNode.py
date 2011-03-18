@@ -31,7 +31,7 @@ class DraggableNode(object):
             if obj != True and obj != False: #obj is a dictionary
                 if len(obj['ind']) > 0:
                     if str(obj['ind'][0]) == str(self.node_num):
-                        print 'Twas me!:', self.name
+                        print 'Clicked:', self.name
                         if event.button == 3:
                             self.context_menu() #popup menu on right mouseclick
                         if event.button == 1:
