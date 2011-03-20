@@ -27,10 +27,19 @@ class BrowserMenuBar(QtGui.QMenuBar):
                                                          slot = parent.matplot_frame.toggle_axis_units, checkable = True)
         node_labels_view_action = self.create_action("Node &Labels", "Ctrl+L", "Show node labels on the current plot",
                                                          slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        graph_properties_view_action = self.create_action("Graph &Properties", tip = "Change graphing properties and preferences",
+                                                         slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        console_window_view_action = self.create_action("&Console Window", tip = "View messages and extra information about program activities",
+                                                         slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        
+        view_menu.addAction(axis_units_view_action)
         view_menu.addAction(fullscreen_action)
         view_menu.addAction(grid_view_action)
-        view_menu.addAction(axis_units_view_action)
         view_menu.addAction(node_labels_view_action)
+        view_menu.addSeparator()
+        view_menu.addAction(console_window_view_action)
+        view_menu.addAction(graph_properties_view_action)
+        
         
         #Dialogs Menu
         #dialogs_menu = self.addMenu("&Dialogs")

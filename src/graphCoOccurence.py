@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-import re, os, sys
+import re, os
 
 from PyQt4 import QtGui
 import matplotlib.pyplot as PLT
 import networkx as NX
 import numpy
-
 
 class GraphCoOccurence(object):
     def __init__(self, parent = None):

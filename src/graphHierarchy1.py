@@ -2,11 +2,9 @@
 
 import os
 
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QFileDialog, QMessageBox
+from PyQt4 import QtGui
 
 import networkx as NX
-import matplotlib.text as MLtext
 import numpy
 
 from draggableNode import DraggableNode
@@ -17,7 +15,7 @@ class GraphHierarchy1(object):
         self.status_bar = parent.status_bar
         self.axes = parent.axes
         self.fig = parent.fig
-        self.node_size_mult = 700
+        self.node_size_mult = (parent.slider.value()/100.0)*1500 + 100
 
         # Dialog for step directory if not set
         if self.parent.step_path == None:
@@ -46,35 +44,37 @@ class GraphHierarchy1(object):
         [self.Gh.add_node(x, obj=n) for x,n in zip(nodes, self.nodes)]
         [self.Gh.add_edge(e[0], e[1]) for e in edges]
 
-        nodelist = self.Gh.nodes()
+        self.nodelist = self.Gh.nodes()
 
         self.pos = NX.spring_layout(self.Gh)
 
         try:
-            xy=numpy.asarray([self.pos[v] for v in nodelist])
+            xy=numpy.asarray([self.pos[v] for v in self.nodelist])
         except KeyError as e:
-            raise nx.NetworkXError('Node %s has no position.'%e)
+            raise NX.NetworkXError('Node %s has no position.'%e)
         except ValueError:
-            raise nx.NetworkXError('Bad value in node positions.')
+            raise NX.NetworkXError('Bad value in node positions.')
 
-        # DraggableNode order is not garaunteed coming out of the NX.spring_layout
+        # DraggableNode order is not gauranteed coming out of the NX.spring_layout
         # call, because it returns a hashtable. Here, we make sure each node is 
         # correctly numbered.
-        for o in self.nodes:
-            o.set_node_num(o, nodelist.index(o.name))
+        [o.set_node_num(o, self.nodelist.index(o.name)) for o in self.nodes]
 
-        scaled_node_size = lambda(node) : NX.degree(self.Gh, node) * self.node_size_mult
-        self.artist = self.axes.scatter(xy[:,0], xy[:,1], self.node_size_mult, c='r', alpha=0.5)
+        self.scaled_node_size = lambda(node) : NX.degree(self.Gh, node)**(1/2.0) * self.node_size_mult
+        node_sizes = map(self.scaled_node_size, self.nodelist)
+        
+        self.artist = self.axes.scatter(xy[:,0], xy[:,1], node_sizes, c='r', alpha=0.5)
         self.edges = NX.draw_networkx_edges(self.Gh, self.pos, ax=self.axes, width=1.0, alpha=1.0, edge_color="red")        
        
         if self.parent.draw_node_labels_tf:
-            NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 14)
+            NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 13)
         
     def destruct(parent, self):
-        '''Disconnects nodes listening for events that eat up cpu cycles'''
+        '''Disconnects nodes from listening in the current frame'''
         [o.disconnect(o) for o in self.nodes]
 
     def find_edges(self, f, dirlist, xref_str, doc_str):
+        '''Parses a file for link to other STEP files, returning corresponding graph edges'''
         out = []
         for line in open(f):
             if xref_str in line:
@@ -91,6 +91,7 @@ class GraphHierarchy1(object):
         return out
 
     def find_step_files(self):
+        '''Locates STEP files in the parent's current directory'''
         out = []
         for root, dirs, _files in os.walk(self.parent.step_path):
             # print root, dirs, files
@@ -120,11 +121,12 @@ class GraphHierarchy1(object):
         try:
             xy=numpy.asarray([self.pos[v] for v in self.Gh.nodes()])
         except KeyError as e:
-            raise nx.NetworkXError('Node %s has no position.'%e)
+            raise NX.NetworkXError('Node %s has no position.'%e)
         except ValueError:
-            raise nx.NetworkXError('Bad value in node positions.')
+            raise NX.NetworkXError('Bad value in node positions.')
 
-        self.artist = self.axes.scatter(xy[:,0], xy[:,1], self.node_size_mult, c='r', alpha=0.5)
+        node_sizes = map(self.scaled_node_size, self.nodelist)
+        self.artist = self.axes.scatter(xy[:,0], xy[:,1], node_sizes, c='r', alpha=0.5)
         self.edges = NX.draw_networkx_edges(self.Gh, self.pos, ax=self.axes, edge_color='red')
 
         if self.parent.draw_node_labels_tf:
@@ -140,4 +142,6 @@ class GraphHierarchy1(object):
     def set_node_mult(self, mult):
         self.node_size_mult = (mult/100.0)*1500 + 100
         self.status_bar.showMessage('Node Size Multiplier: '+str(self.node_size_mult), 2500)
-        self.redraw(self)
+
+        if self.Gh != None:
+            self.redraw(self)

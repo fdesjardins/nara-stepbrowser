@@ -6,17 +6,15 @@ Step File Browser, Top Level
 Ported to Qt by: Forrest Desjardins
 """
 
-import sys, os, random
+import os, sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import QApplication, QMainWindow, QMessageBox
 
 ## user defined
-from browserAddressBar import *
-from browserMenuBar import *
-from browserMatPlotFrame import *
-from browserStatusBar import *
-
+from browserMenuBar import BrowserMenuBar
+from browserMatPlotFrame import BrowserMatPlotFrame
+from browserStatusBar import BrowserStatusBar
 
 class StepBrowser(QtGui.QWidget):
     def __init__(self, parent = None):
@@ -66,7 +64,7 @@ below the plotting area.
         QMessageBox.about(self, "Manual for Step File Browser", msg.strip())
 
     def open_file(self, f):
-        os.system('gedit ' + self.step_path + '/' + f)
+        os.system('gedit ' + self.step_path + '/' + str(f))
 
     def save_plot(self):
         file_choices = "PNG (*.png)|*.png"

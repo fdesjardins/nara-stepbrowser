@@ -2,10 +2,10 @@ function [ output_args ] = demo( input_args )
 %DEMO Summary of this function goes here
 %   Detailed explanation goes here
 
-    n = 100;
+    n = 10;
 
     x = randperm(n); 
-    gs = 35; 
+    gs = 3; 
     group1 = x(1:gs); 
     group2 = x(gs+1:end);
     
@@ -28,12 +28,15 @@ function [ output_args ] = demo( input_args )
 
     [V D] = eigs(L, 2, 'SA'); 
     [ignore p] = sort(V(:,2));
-	V(p)
+	V(p);
     %figure;
     %plot(V(p));
-    
-    %figure;
-    %imagesc(A(p,p));
+	p
+	A
+	A(p,p)
+
+    figure;
+    imagesc(A(p,p));
 end
 
 

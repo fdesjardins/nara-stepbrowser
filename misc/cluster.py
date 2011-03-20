@@ -2,16 +2,15 @@ import numpy, scipy
 from numpy import random, array, triu, linalg
 from scipy.sparse.linalg import eigs
 
-from decimal import Decimal
-
+import matplotlib.pyplot as plt
 import matplotlib.pylab as P
 
 def main():
 
-    n = 100
+    n = 1000
 
     randperm = random.permutation(n)
-    gs = 35
+    gs = 350
     group1 = randperm[0:gs]
     group2 = randperm[gs:]
 
@@ -29,7 +28,7 @@ def main():
     #hinton(A, maxWeight = 0.5)
     #index_tracker(A)
     
-    L = laplacian(A);
+    L = laplacian(A)
 
     D,V = eigs(L, k=2, which='SR')
 
@@ -38,10 +37,29 @@ def main():
     _sorted.sort()
 
     ind = [V2.index(x) for x in _sorted]
-    
     V_jump = [V[x] for x in ind]
+
+    #ax = plt.subplot(111)
+    #ax.plot([x[1] for x in V_jump])
+    #plt.show()
+
+    # A(p,p) in 1d array
+    A_pp = []
+    for x in ind:
+        for y in ind:
+            A_pp.append(A[x][y])
     
-    for x in V_jump: print x
+    # out = A(p,p) in 2d array
+    out = scipy.zeros((n,n), float).tolist()
+    y = 0
+    for x in xrange(len(A_pp)):
+        out[x%n][y] = A_pp[x]
+        if (x+1)%n == 0:
+            y += 1
+     
+    #hinton(array(out), maxWeight = 0.5)
+    index_tracker(array(out))
+    
 
 # def eigs(L, k, sigma):
 

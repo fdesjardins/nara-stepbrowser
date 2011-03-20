@@ -1,0 +1,28 @@
+3-18-2011
+3-19-2011
+
+Finished porting the clustering example from matlab to python, and graphing
+confirms it's working. Some result images were saved in misc. 
+
+Got new features into co-occurence graph, and extensively reorganized that
+file. Should have the new features into context graph soon. 
+
+Started preparing to get the clustering code to work with co-occurence. 
+Should be roughly in by next commit.
+
+Fixed node sizing issue in hierarchy graph.
+
+Brainstorm/Todo:
+
+clustering into co-occurence/context
+clustering configuration window
+see edge weights
+each graph has an 'additional information' window
+make node size a value entry
+switch label type from names to numbers
+graph editing tools
+	node/edge hiding, 
+	lasso/multiple select, 
+	node/edge colors, 
+	individual size, 
+	etc
