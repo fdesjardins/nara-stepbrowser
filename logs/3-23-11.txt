@@ -1,0 +1,16 @@
+3-23-2011
+
+Fixed a bug where co-occurence wasn't disconnecting nodes, causing a
+stuttering in the interface. 
+
+Also, got to test the browser in Windows 7. Everything is working 
+other than the color scheme being used to display edge weights in
+the co-occurence graph. File opening mechanism also needs changed, 
+but I knew about that. 
+
+Added in a dialog window to allow the user the adjust the clustering results.
+Going to finish trying to get co-occurence working with the clustering
+code, push my changes, and switch over to Windows for a while. 
+
+There is now a window availabe in view that displays, hopefully, useful
+console messages.

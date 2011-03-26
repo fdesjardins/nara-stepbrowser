@@ -11,7 +11,7 @@ import numpy
 
 from draggableNode import DraggableNode
 
-class GraphCoOccurence1(object):
+class GraphCoOccurence2(object):
     def __init__(self, parent = None):
         self.parent = parent
         self.status_bar = parent.status_bar
@@ -19,13 +19,7 @@ class GraphCoOccurence1(object):
         self.fig = parent.fig
         self.node_size_mult = 700
 
-        # Dialog for step directory if not set
-        if self.parent.step_path == None:
-            filedialog = QtGui.QFileDialog()
-            tmp = filedialog.getExistingDirectory(None, 'Open Directory', '')
-            self.parent.set_step_path(str(tmp))
-            os.chdir(self.parent.step_path)
-
+        self.check_directory()
         dirlist = os.listdir(self.parent.step_path)
 
         # Build dictionary and term_list for each file in current dir
@@ -64,7 +58,7 @@ class GraphCoOccurence1(object):
         except ValueError:
             raise NX.NetworkXError('Bad value in node positions.')
 
-        # DraggableNode order is not gauranteed coming out of the NX.spring_layout
+        # DraggableNode order is not garaunteed coming out of the NX.spring_layout
         # call, because it returns a hashtable. Here, we make sure each node is 
         # correctly numbered.
         for o in self.nodes:
@@ -77,10 +71,7 @@ class GraphCoOccurence1(object):
         if self.parent.draw_node_labels_tf:
             NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 13)
             
-    def destruct(parent, self):
-        '''Disconnects nodes from listening in the current frame'''
-        [o.disconnect(o) for o in self.nodes]
-            
+
     def build_dict(self, f, step_dict, term_lists):
         '''Accepts a file, dictionary of terms, and dictionary of STEP files
         and adds new terms and the file f to each dictionary'''
@@ -100,6 +91,18 @@ class GraphCoOccurence1(object):
                             else:
                                 step_dict[token] = 1
         return step_dict, term_lists
+
+    def check_directory(self):
+        '''Dialog for step directory if not set'''
+        if self.parent.step_path == None:
+            filedialog = QtGui.QFileDialog()
+            tmp = filedialog.getExistingDirectory(None, 'Open Directory', '')
+            self.parent.set_step_path(str(tmp))
+            os.chdir(self.parent.step_path)
+
+    def destruct(parent, self):
+        '''Disconnects nodes from listening in the current frame'''
+        [o.disconnect(o) for o in self.nodes]
 
     def find_cooccurences(self, A, term_lists):
         index1 = 0

@@ -25,6 +25,7 @@ from graphHierarchy import GraphHierarchy
 from graphHierarchy1 import GraphHierarchy1
 from graphCoOccurence import GraphCoOccurence
 from graphCoOccurence1 import GraphCoOccurence1
+from graphCoOccurence2 import GraphCoOccurence2
 #from graphContext import *
 
 
@@ -35,7 +36,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.status_bar = parent.status_bar
 
         #State
-        self.draw_node_labels_tf = False
+        self.draw_node_labels_tf = True
         self.draw_axis_units_tf = False
         self.draw_grid_tf = False
         self.g = None
@@ -67,6 +68,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
                                   "STEP Hierarchy1", 
                                   "STEP Co-occurence",
                                   "STEP Co-occurence1",
+                                  "STEP Co-occurence2",
                                   "STEP Context"])
         self.mode_combo.setMinimumWidth(200)
         
@@ -142,6 +144,8 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.g = GraphCoOccurence(self)
         elif draw_mode == "STEP Co-occurence1":
             self.g = GraphCoOccurence1(self)
+        elif draw_mode == "STEP Co-occurence2":
+            self.g = GraphCoOccurence2(self)
 
         self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.g.set_node_mult)       
         self.axes.grid(self.draw_grid_tf)

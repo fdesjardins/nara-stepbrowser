@@ -27,16 +27,21 @@ class BrowserMenuBar(QtGui.QMenuBar):
                                                          slot = parent.matplot_frame.toggle_axis_units, checkable = True)
         node_labels_view_action = self.create_action("Node &Labels", "Ctrl+L", "Show node labels on the current plot",
                                                          slot = parent.matplot_frame.toggle_node_labels, checkable = True)
-        graph_properties_view_action = self.create_action("Graph &Properties", tip = "Change graphing properties and preferences",
-                                                         slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        clustering_config_view_action = self.create_action("Clustering Configuration", 
+                                                           tip = "Change the way the clustering algorithm generates co-occurence and context graphs",
+                                                           slot = parent.cluster_config, checkable = False)
         console_window_view_action = self.create_action("&Console Window", tip = "View messages and extra information about program activities",
-                                                         slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+                                                        slot = parent.console, checkable = False)
+        graph_properties_view_action = self.create_action("Graph &Properties", tip = "Change general graphing properties and preferences",
+                                                          slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        
         
         view_menu.addAction(axis_units_view_action)
         view_menu.addAction(fullscreen_action)
         view_menu.addAction(grid_view_action)
-        view_menu.addAction(node_labels_view_action)
+        view_menu.addAction(node_labels_view_action); node_labels_view_action.setChecked(True);
         view_menu.addSeparator()
+        view_menu.addAction(clustering_config_view_action)
         view_menu.addAction(console_window_view_action)
         view_menu.addAction(graph_properties_view_action)
         
@@ -76,6 +81,3 @@ class BrowserMenuBar(QtGui.QMenuBar):
                      (lambda x=duration: self.parent.status_bar.showMessage(action.statusTip(), x)))
 
         return action
-
-
-    

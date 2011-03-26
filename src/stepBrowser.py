@@ -3,32 +3,42 @@
 """
 Step File Browser, Top Level
 
-Ported to Qt by: Forrest Desjardins
+Ported to Qt and further developed by: Forrest Desjardins
 """
 
 import os, sys
 
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QApplication, QMainWindow, QMessageBox
+from PyQt4.QtGui import QApplication, QMainWindow, QMessageBox, QFileDialog
 
 ## user defined
 from browserMenuBar import BrowserMenuBar
 from browserMatPlotFrame import BrowserMatPlotFrame
 from browserStatusBar import BrowserStatusBar
+from clusteringConfig import ClusteringConfig
+from consoleDialog import ConsoleDialog
 
 class StepBrowser(QtGui.QWidget):
     def __init__(self, parent = None):
         QMainWindow.__init__(self, parent)
         self.setWindowTitle('Step File Browser')
-
+        
         self.step_path = None
 
-        #Create Widgets
+        # Create Widgets
         self.status_bar = BrowserStatusBar(self)
         self.matplot_frame = BrowserMatPlotFrame(self)
         self.menu_bar = BrowserMenuBar(self)
+
+        # Redirect stdout,stderr to dialog window
+        self.console_dialog = ConsoleDialog(sys.stdout)
+        sys.stdout = self.console_dialog
+        sys.stderr = self.console_dialog
+
+        # Clustering Config Window
+        self.clust_config = ClusteringConfig(sys.stdout)
         
-        #Create Layout
+        # Create Layout
         vbox = QtGui.QVBoxLayout(self)
         vbox.addWidget(self.menu_bar)
         vbox.addWidget(self.matplot_frame)
@@ -62,6 +72,12 @@ Transformations may be applied using the matplotlib navigation toolbar
 below the plotting area.
 '''
         QMessageBox.about(self, "Manual for Step File Browser", msg.strip())
+        
+    def cluster_config(self):
+        self.clust_config.show()
+
+    def console(self):
+        self.console_dialog.show()
 
     def open_file(self, f):
         os.system('gedit ' + self.step_path + '/' + str(f))
@@ -89,6 +105,7 @@ below the plotting area.
         self.step_path = path
         self.matplot_frame.step_path = path
         self.status_bar.showMessage("STEP directory changed to %s" % path, 2500)
+        print "STEP directory changed to %s" % path
 
     def toggle_fullscreen(self):
         if self.isFullScreen():
