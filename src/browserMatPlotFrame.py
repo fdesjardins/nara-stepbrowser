@@ -93,8 +93,8 @@ class BrowserMatPlotFrame(QtGui.QWidget):
 
         #Vertical layout. Adding all other widgets, and hbox layout.
         vbox = QtGui.QVBoxLayout()
-        vbox.addWidget(self.canvas)
         vbox.addWidget(self.mpl_toolbar)
+        vbox.addWidget(self.canvas)
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)

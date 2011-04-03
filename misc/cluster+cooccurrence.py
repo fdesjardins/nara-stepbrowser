@@ -165,7 +165,7 @@ for key1, value1 in term_lists.items():
    	
     index1 = index1 + 1
 	
-print nodes
+# print nodes
 
 ##### ----- Clustering ------ #####
 
@@ -179,16 +179,19 @@ L = laplacian(B)
 
 #index_tracker(L)
 
-D,V = eigs(L, k=2, which='SR')
+for x in xrange(10):
+	D,V = eigs(L, k=2, which='SR')
 
-V2 = [x[1] for x in V]
-_sorted = [x[1] for x in V]
-_sorted.sort()
+	print V
 
-ind = [V2.index(x) for x in _sorted]
-V_mag = [V[x] for x in ind]
+	V2 = [x[1] for x in V]
+	_sorted = [x[1] for x in V]
+	_sorted.sort()
 
-print ind
+	ind = [V2.index(x) for x in _sorted]
+	V_mag = [V[x] for x in ind]
+
+#print ind
 #print V_mag
 
 
@@ -206,7 +209,7 @@ if _draw == 1:
                     xytext=(0, v), textcoords='offset points',
                     arrowprops=dict(arrowstyle="->",
                                     connectionstyle="angle3,angleA=0,angleB=-90"),
-                    )
+                               )
         if v == 15:
             v = 45
         else:
@@ -235,6 +238,8 @@ for x in xrange(len(A_pp)):
 
 data = []
 
+#print V_mag
+
 separators = [9]
 clusters = len(separators)+1
 
@@ -248,7 +253,7 @@ for s in xrange(clusters):
             for j in ind[0:separators[s]]:
                 tmp.append(A[i][j])
         out.append(tmp)
-        
+
     elif s == len(separators):
         for i in ind[separators[s-1]:]:
             for j in ind[separators[s-1]:]:
@@ -260,18 +265,27 @@ for s in xrange(clusters):
             for j in ind[separators[s-1]:separators[s]]:
                 tmp.append(A[i][j])
         out.append(tmp)
+#print out
 
-print out
-        
+out_2d = []      
 
-Ghs = []
+target = out[1]  
 
-for x in xrange(clusters):
-    Ghs.append(NX.Graph(data=A))
+_n = int(len(target)**(1/2.0))
+
+tmp = scipy.zeros((_n,_n), float).tolist()
+
+y=0
+for x in xrange(len(target)):
+    tmp[x%_n][y] = target[x]
+    if (x+1)%_n == 0:
+        y += 1
+
+#index_tracker(array(tmp))
     
+tmp = array(tmp)
 
-'''
-Gh = NX.Graph(data=A)
+Gh = NX.Graph(data=tmp)
 all_nodes = Gh.nodes()
 edges = Gh.edges()
 ecolors = [A[node[0], node[1]] for node in edges]
@@ -282,9 +296,8 @@ scaled_node_size = lambda(node) : NX.degree(Gh, node) * 15
 position = NX.spring_layout(Gh)    # just choose a layout scheme
 #position = NX.shell_layout(Gh)    # just choose a layout scheme
 NX.draw_networkx_nodes(Gh, position, node_size=map(scaled_node_size, all_nodes), node_color='b', alpha = 0.75)
-NX.draw_networkx_edges(Gh, position, Gh.edges(), width=1.0, alpha=0.75, edge_color = ecolors, edge_cmap=plt.cm.Blues, edge_vmin = A.min(), edge_vmax = A.max())
-NX.draw_networkx_labels(Gh, position, fontsize = 14)
+NX.draw_networkx_edges(Gh, position, Gh.edges(), width=1.0, alpha=0.75, edge_color = ecolors, edge_cmap=plt.cm.Blues, edge_vmin = tmp.min(), edge_vmax = tmp.max())
+#NX.draw_networkx_labels(Gh, position, fontsize = 14)
 # now for the Matplotlib part:
 plt.axis("off")
 plt.show()
-'''    

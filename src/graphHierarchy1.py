@@ -71,7 +71,7 @@ class GraphHierarchy1(object):
         
     def destruct(parent, self):
         '''Disconnects nodes from listening in the current frame'''
-        [o.disconnect(o) for o in self.nodes]
+        [o.disconnect() for o in self.nodes]
 
     def find_edges(self, f, dirlist, xref_str, doc_str):
         '''Parses a file for link to other STEP files, returning corresponding graph edges'''

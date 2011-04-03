@@ -79,7 +79,7 @@ class GraphCoOccurence1(object):
             
     def destruct(parent, self):
         '''Disconnects nodes from listening in the current frame'''
-        [o.disconnect(o) for o in self.nodes]
+        [o.disconnect() for o in self.nodes]
             
     def build_dict(self, f, step_dict, term_lists):
         '''Accepts a file, dictionary of terms, and dictionary of STEP files

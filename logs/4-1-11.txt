@@ -1,0 +1,20 @@
+4-1-2011
+4-2-2011
+
+Spent the last two days debugging and mapping out my next set of goals
+I want to tackle before the semester's end. 
+
+Mainly, a long time was spent on an issue involving the automatic 
+segmentation/clustering of graphs that was causing issues. However, 
+it's now working well, and has been tested on a variety of STEP
+files sets.
+
+Performance has become an glaring issue, and there's only so much that
+can be done about it. The original clustering algorithm in ../misc/ that
+uses a lightweight ui and doesn't contain any bells/whistles I've added
+even suffers once the number of files reaches over about 100. Unfortunately,
+I think this is just an artifact of the many layers of Python libraries
+being used.
+
+I will look into performance improvements further, but it seems like 
+the library calls are the heaviest loads in the system.

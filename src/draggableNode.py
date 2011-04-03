@@ -16,13 +16,25 @@ class DraggableNode(object):
         self.collection = None
         self.connect()
 
+    def center_on_graph(self):
+        print 'centering on graph'
+
+    def center_on_node(self):
+        print 'centering on node'
+
     def connect(self):
         self.cidpress = self.parent.fig.canvas.mpl_connect('button_press_event', self.on_press)
         self.cidmotion = self.parent.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
         self.cidrelease = self.parent.fig.canvas.mpl_connect('button_release_event', self.on_release)
 
-    def set_node_num(parent, self, node_num):
-        self.node_num = node_num
+    def context_menu(self):
+        cm = ContextMenu(self.name, self)
+        cm.popup(QCursor.pos())
+
+    def disconnect(self):
+        self.parent.fig.canvas.mpl_disconnect(self.cidpress)
+        self.parent.fig.canvas.mpl_disconnect(self.cidmotion)
+        self.parent.fig.canvas.mpl_disconnect(self.cidrelease)
 
     def on_press(self, event):
         collection = self.parent.get_artist(self.parent)
@@ -31,11 +43,13 @@ class DraggableNode(object):
             if obj != True and obj != False: #obj is a dictionary
                 if len(obj['ind']) > 0:
                     if str(obj['ind'][0]) == str(self.node_num):
-                        print 'Clicked:', self.name
                         if event.button == 3:
                             self.context_menu() #popup menu on right mouseclick
-                        if event.button == 1:
+                        if event.button == 2:
                             self.press = event.xdata, event.ydata #save coords for node movement
+                        if event.button == 1:
+                            print 'Selected: '+self.name
+                            self.parent.select_node(self)
 
     def on_motion(self, event):
         collection = self.parent.get_artist(self.parent)
@@ -45,7 +59,7 @@ class DraggableNode(object):
                 if len(obj['ind']) > 0: #at least one node activated
                     if str(obj['ind'][0]) == str(self.node_num): #found self in event list
                         self.parent.status_bar.showMessage('File Name: "'+str(self.name)+'"', 2500)
-                        
+                            
         # If self.press is set, it means
         # 1) self.press gets set in on_press()
         # 2) self.press can only be set in one instance of DraggableNode at a time
@@ -53,6 +67,7 @@ class DraggableNode(object):
         # downside: kinda slow
         if self.press != None:
             xpress,ypress = self.press
+            # print event.xdata, event.ydata
             self.parent.pos[self.name][0] = event.xdata
             self.parent.pos[self.name][1] = event.ydata
             self.parent.redraw(self.parent)
@@ -60,12 +75,6 @@ class DraggableNode(object):
     def on_release(self, event):
         self.press = None
 
-    def context_menu(self):
-        cm = ContextMenu(self.name, self)
-        cm.popup(QCursor.pos())
-
-    def disconnect(self, node):
-        node.parent.fig.canvas.mpl_disconnect(node.cidpress)
-        node.parent.fig.canvas.mpl_disconnect(node.cidmotion)
-        node.parent.fig.canvas.mpl_disconnect(node.cidrelease)
+    def set_node_num(parent, self, node_num):
+        self.node_num = node_num
         

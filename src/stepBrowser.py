@@ -36,7 +36,7 @@ class StepBrowser(QtGui.QWidget):
         sys.stderr = self.console_dialog
 
         # Clustering Config Window
-        self.clust_config = ClusteringConfig(sys.stdout)
+        self.clust_config = ClusteringConfig(self)
         
         # Create Layout
         vbox = QtGui.QVBoxLayout(self)
@@ -74,7 +74,7 @@ below the plotting area.
         QMessageBox.about(self, "Manual for Step File Browser", msg.strip())
         
     def cluster_config(self):
-        self.clust_config.show()
+        self.clust_config._show()
 
     def console(self):
         self.console_dialog.show()

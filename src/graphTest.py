@@ -19,12 +19,12 @@ class GraphTest(object):
         
         self.g = NX.Graph()
 
-        files = ['file'+str(x)+'.step' for x in xrange(15)]
+        files = ['file'+str(x)+'.step' for x in xrange(5)]
         self.objs = [DraggableNode(self, x) for x in files]
 
         [self.g.add_node(x, obj=n) for x,n in zip(files, self.objs)]
-        [self.g.add_edge(files[0], files[x], weight=x*1.0) for x in xrange(1,15)]
-        [self.g.add_edge(files[14], files[x], weight=x*1.0) for x in xrange(0,14)]
+        [self.g.add_edge(files[0], files[x], weight=x*1.0) for x in xrange(1,5)]
+        [self.g.add_edge(files[4], files[x], weight=x*1.0) for x in xrange(0,4)]
         nodelist = self.g.nodes()
 
         self.pos = NX.spring_layout(self.g)
@@ -48,7 +48,7 @@ class GraphTest(object):
 
     def destruct(parent, self):
         '''Disconnects nodes listening for events that eat up cpu cycles'''
-        [o.disconnect(o) for o in self.objs]
+        [o.disconnect() for o in self.objs]
 
     def get_artist(child, self):
         return self.artist
@@ -63,6 +63,8 @@ class GraphTest(object):
         #save transformations
         x1,x2 = self.axes.get_xlim()
         y1,y2 = self.axes.get_ylim()
+
+        # print x1,y1,':',x2,y2
 
         self.axes.clear()
         self.artist = None
