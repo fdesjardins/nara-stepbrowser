@@ -5,7 +5,7 @@ import gc
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QPushButton
 from PyQt4.QtGui import QLabel, QSlider, QComboBox
-from PyQt4.QtGui import QMessageBox
+from PyQt4.QtGui import QMessageBox, QSpinBox, QSpacerItem
 from PyQt4.QtCore import Qt
 
 import numpy
@@ -22,10 +22,7 @@ import networkx as NX
 from graphTest import GraphTest
 from graphTestNumpy import GraphTestNumPy
 from graphHierarchy import GraphHierarchy
-from graphHierarchy1 import GraphHierarchy1
-from graphCoOccurence import GraphCoOccurence
-from graphCoOccurence1 import GraphCoOccurence1
-from graphCoOccurence2 import GraphCoOccurence2
+from graphCoOccurrence import GraphCoOccurrence
 #from graphContext import *
 
 
@@ -56,7 +53,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.canvas.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
         
         self.axes = self.fig.add_subplot(111)
-        self.axes.hold(False) #clear the axes every time plot() is called
+        #self.axes.hold(False) #clear the axes every time plot() is called
 
         self.mpl_toolbar = NavigationToolbar(self.canvas, self)
 
@@ -65,31 +62,29 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.mode_combo.addItems(["Graph Test", 
                                   "Graph Test Numpy", 
                                   "STEP Hierarchy", 
-                                  "STEP Hierarchy1", 
                                   "STEP Co-occurence",
-                                  "STEP Co-occurence1",
-                                  "STEP Co-occurence2",
                                   "STEP Context"])
         self.mode_combo.setMinimumWidth(200)
         
-        self.draw_button = QPushButton("&Draw")
+        self.draw_button = QPushButton("&Draw/Refresh")
         self.connect(self.draw_button, QtCore.SIGNAL('clicked()'), self.on_draw)
         
-        self.slider_label = QLabel('Node Size (%):')
-        self.slider = QSlider(Qt.Horizontal)
-        self.slider.setRange(1, 100)
-        self.slider.setValue(50)
-        self.slider.setTracking(True)
-        self.slider.setTickPosition(QSlider.TicksBothSides)
-        # slider connection set in on_draw() method
+        self.node_size = QSpinBox(self)
+        self.node_size.setSingleStep(5)
+        self.node_size.setMaximum(100)
+        self.node_size.setValue(20)
+        self.node_size_label = QLabel('Node Size (%):')
+        # connection set in on_draw() method
 
         #Horizontal layout
         hbox = QtGui.QHBoxLayout()
     
         #Adding matplotlib widgets
-        for w in [self.mode_combo, self.slider_label, self.slider, self.draw_button]:
-            hbox.addWidget(w)
-            hbox.setAlignment(w, Qt.AlignVCenter)
+        for w in [self.mode_combo, 's', self.node_size_label, self.node_size, self.draw_button]:
+            if w == 's': hbox.addStretch()
+            else:
+                hbox.addWidget(w)
+                hbox.setAlignment(w, Qt.AlignVCenter)
 
         #Vertical layout. Adding all other widgets, and hbox layout.
         vbox = QtGui.QVBoxLayout()
@@ -98,9 +93,9 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
+        self.canvas.setFocus(True)
         
     def draw_axis_units(self):
-
         fw = self.fig.get_figwidth()
         fh = self.fig.get_figheight()
 
@@ -122,15 +117,14 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             
         self.axes.grid(self.draw_grid_tf)
         self.canvas.draw()
-			
+
     def on_draw(self): 
         draw_mode = self.mode_combo.currentText()
         
         self.axes.clear()
         if self.g != None:
             if hasattr(self.g, 'destruct'):
-                self.g.destruct(self.g)
-                self.g = None
+                self.g.destruct()
 
         if draw_mode == "Graph Test":
             self.g = GraphTest(self)
@@ -138,16 +132,13 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.g = GraphTestNumPy(self)
         elif draw_mode == "STEP Hierarchy":
             self.g = GraphHierarchy(self)
-        elif draw_mode == "STEP Hierarchy1":
-            self.g = GraphHierarchy1(self)
         elif draw_mode == "STEP Co-occurence":
-            self.g = GraphCoOccurence(self)
-        elif draw_mode == "STEP Co-occurence1":
-            self.g = GraphCoOccurence1(self)
-        elif draw_mode == "STEP Co-occurence2":
-            self.g = GraphCoOccurence2(self)
+            self.g = GraphCoOccurrence(self)
+        elif draw_mode == "STEP Context":
+            self.g = GraphCoOccurrence(self)
 
-        self.connect(self.slider, QtCore.SIGNAL('valueChanged(int)'), self.g.set_node_mult)       
+        self.connect(self.node_size, QtCore.SIGNAL('valueChanged(int)'), self.g.set_node_mult)
+        self.node_size.emit(QtCore.SIGNAL('valueChanged()'))
         self.axes.grid(self.draw_grid_tf)
         self.canvas.draw()
         
@@ -175,4 +166,4 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.draw_node_labels_tf = False
 
         if self.g != None:
-            self.g.redraw(self.g)
+            self.g.redraw()

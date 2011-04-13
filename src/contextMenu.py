@@ -12,10 +12,21 @@ class ContextMenu(QtGui.QMenu):
 
         QtGui.QMenu.__init__(self, self.matplot_frame)
 
-        open_action = self.create_action("&Open ", tip = "Open " + str(node_name) + " using the default application.", 
+        open_action = self.create_action("&Open File", tip = "Open " + str(node_name) + " using the default application.", 
                                          slot = (lambda x=node_name: self.parent.open_file(x)))
         
+        center_on_node = self.create_action("Center on &Node",
+                                            tip = "Transforms the canvas to fit the selected node and its neighors",
+                                            slot = (lambda x=node_name: self.parent.open_file(x)))
+        
+        center_on_graph = self.create_action("Center on &Graph",
+                                            tip = "Transforms the canvas to fit the selected node's containing graph",
+                                            slot = (lambda x=node_name: self.parent.open_file(x)))
+        
         self.addAction(open_action)
+        self.addSeparator()
+        self.addAction(center_on_node)
+        self.addAction(center_on_graph)
         self.sizeHint()
 
 

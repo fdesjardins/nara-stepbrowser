@@ -20,7 +20,7 @@ class GraphCoOccurence2(object):
         self.status_bar = parent.status_bar
         self.axes = parent.axes
         self.fig = parent.fig
-        self.node_size_mult = 700
+        self.node_size_mult = (parent.node_size.value()/100.0)*1500 + 100
 
         self.check_directory()
         dirlist = os.listdir(self.parent.step_path)
@@ -49,19 +49,15 @@ class GraphCoOccurence2(object):
         nodes = [key for key,value in term_lists.items()]
         edges = [g.edges() for g in Ghs]
         
-        print edges
         # Each graph returns edges referencing nodes 0..n from graph.edges() above.
         # Thus, if there are multiple independent graphs, we need to adjust indices
         # such that they are appropriate for describing the list of all nodes
         edges = self.unpack_edges(edges)
-        print edges
 
         # Create real nodes+edges, using draggable nodes
         self.edges = [(nodes[e[0]], nodes[e[1]]) for e in edges]
         self.ecolors = [A[node[0], node[1]] for node in edges]
         self.nodes = [DraggableNode(self,x) for x in nodes]
-        
-        print self.ecolors
 
         # gh = NX.Graph(data=self.A) # Temporary, used to gather edge list
 
@@ -91,8 +87,6 @@ class GraphCoOccurence2(object):
         [self.Gh.add_edge(e[0], e[1], weight = w) for e,w in zip(self.edges, self.ecolors)]
         nodelist = self.Gh.nodes()
         
-        # print nodes, len(self.edges), len(self.ecolors)
-        
         self.pos = NX.spring_layout(self.Gh)
 
         try:
@@ -117,10 +111,9 @@ class GraphCoOccurence2(object):
             NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 13)
             
     def best_separation(self, ind, mag):
-        
-        for x in mag:
-            print x
-        
+        '''Determines the best place to segment the indices into
+        two clusters based on the magnitudes returned from eigs'''
+
         if mag[0][1] < 0+0.j:
             for v in xrange(len(mag)):
                 if mag[v][1] > 0+0.j:

@@ -1,75 +1,96 @@
 #!/usr/bin/env python
 
-import os
-
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QFileDialog
+import os, re
 
 import networkx as NX
 
+import matplotlib.pyplot as PLT
 
-class GraphHierarchy(object):
+import numpy, scipy
+from numpy import random, array, triu, linalg
+from scipy.sparse.linalg import eigs
+
+from draggableNode import DraggableNode
+from graph import Graph
+
+class GraphHierarchy(Graph):
     def __init__(self, parent = None):
-		
-        self.parent = parent
-
-        #Dialog for step directory if not set
-        if self.parent.step_path == None:
-            filedialog = QtGui.QFileDialog()
-            tmp = filedialog.getExistingDirectory(None, 'Open Directory', '')
-            self.parent.set_step_path(str(tmp))
-
-        #self.parent = stepBrowser
-        os.chdir(self.parent.step_path)
-        dirlist = os.listdir(self.parent.step_path)
-
-        #Store STEP file locations
-        self.allStepFilePaths = []
-        for root, dirs, files in os.walk(self.parent.step_path):
-            #print root, dirs, files
-            for f in files:
-                if self.isStepFilename(f):
-                    self.allStepFilePaths.append(os.path.join(root, f))
-
+        Graph.__init__(self, parent)
         
-        #print "len(allStepFilePaths) = ", len(self.allStepFilePaths)
-        #print
-        #print "allStepFilePaths = ", self.allStepFilePaths
-
         dirlist = os.listdir(self.parent.step_path)
         xref_str = "APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT"
         doc_str = "DOCUMENT_FILE"
-        Gh = NX.Graph()
-        Gd = NX.DiGraph()
+        
+        edges = []
+        for f in os.listdir(self.parent.step_path):
+            if os.path.isfile(os.path.join(self.parent.step_path, f)) and self.is_step_file(f):
+                edges += self.find_edges(f, dirlist, xref_str, doc_str)
 
-        for f in dirlist:
-            if os.path.isfile(os.path.join(self.parent.step_path, f)) and self.isStepFilename(f):
-                #print(f)
-                for line in open(f):
-                    if xref_str in line:
-                        line_parts = line.split("'")
-                        if len(line_parts) > 2:
-                            xref_name = line_parts[1]
+        nodes = []
+        for e in edges:
+            if e[0] not in nodes: nodes.append(e[0])
+            if e[1] not in nodes: nodes.append(e[1])
 
-                            try:
-                                (xref_name for xref_name in dirlist).next()
-                                print(f, " -> ", xref_name)
-                                Gh.add_edge(f, xref_name, weight=1.0)
-                                Gd.add_edge(f, xref_name, weight=1.0)
-                            except:
-                                print("File ", f, " references xref ", xref_name, ", but that xref does not exist.")
+        self.nodes = [DraggableNode(self, x) for x in nodes]
+        [self.Gh.add_node(x, obj=n) for x,n in zip(nodes, self.nodes)]
+        [self.Gh.add_edge(e[0], e[1]) for e in edges]
 
-        all_nodes = Gh.nodes()                    
-        scaled_node_size = lambda(node) : NX.degree(Gh, node) * 700
-        position = NX.spring_layout(Gh)    
-        NX.draw_networkx_nodes(Gd, position, ax=self.parent.axes, node_size=map(scaled_node_size, all_nodes), alpha=0.5)
-        NX.draw_networkx_edges(Gd, position, ax=self.parent.axes, width=1.0, alpha=1.0, edge_color="red")
-        NX.draw_networkx_labels(Gd, position, ax=self.parent.axes, fontsize = 14)
+        self.nodelist = self.Gh.nodes()
 
+        self.pos = NX.spring_layout(self.Gh,scale=10)
+
+        try:
+            xy=numpy.asarray([self.pos[v] for v in self.nodelist])
+        except KeyError as e:
+            raise NX.NetworkXError('Node %s has no position.'%e)
+        except ValueError:
+            raise NX.NetworkXError('Bad value in node positions.')
+
+        # DraggableNode order is not gauranteed coming out of the NX.spring_layout
+        # call, because it returns a hashtable. Here, we make sure each node is 
+        # correctly numbered.
+        [o.set_node_num(o, self.nodelist.index(o.name)) for o in self.nodes]
+
+        self.scaled_node_size = lambda(node) : NX.degree(self.Gh, node)**(1/2.0) * self.node_size_mult
+        self.node_sizes = map(self.scaled_node_size, self.nodelist)
+        
+        self.artist = self.axes.scatter(xy[:,0], xy[:,1], self.node_sizes, c='r', alpha=0.5)
+        self.edges = NX.draw_networkx_edges(self.Gh, self.pos, ax=self.axes, width=1.0, alpha=1.0, edge_color="red")        
+       
+        if self.parent.draw_node_labels_tf:
+            NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 13)
+            
+    def find_edges(self, f, dirlist, xref_str, doc_str):
+        '''Parses a file for link to other STEP files, returning corresponding graph edges'''
+        out = []
+        for line in open(f):
+            if xref_str in line:
+                line_parts = line.split("'")
+                if len(line_parts) > 2:
+                    xref_name = line_parts[1]
+                    
+                    try:
+                        (xref_name for xref_name in dirlist).next()
+                        #print(f, " -> ", xref_name)
+                        out.append([f,xref_name])
+                    except:
+                        print("File ", f, " references xref ", xref_name, ", but that xref does not exist.")
+        return out
     
-    def isStepFilename(self, fname):
-        out = map(fname.endswith, ['.stp','.STP','.step','.STEP'])
-        if any(out) == True: return True
-        return False
-
-        #return fname.endswith('.stp') or f.endswith('.STP') or f.endswith('.step') or f.endswith('.STEP')
+    def redraw(self):
+        '''Redraws the current graph. Typically after a move or selection.'''
+        
+        # Need to specify the functions for drawing artist (nodes) and edges during redraw
+        def artist_fn(xy, axes, color='r', _alpha=0.5):
+            return axes.scatter(xy[:,0], xy[:,1], self.node_sizes, c=color, alpha=_alpha)
+        def edges_fn(g, pos, axes, ecolor='red'):
+            return NX.draw_networkx_edges(g, pos, ax=axes, edge_color=ecolor)
+            
+        super(GraphHierarchy, self).redraw(artist_fn, edges_fn)
+        
+    def set_node_mult(self, mult):
+        super(GraphHierarchy, self).set_node_mult(mult)
+        self.node_sizes = map(self.scaled_node_size, self.nodelist)
+            
+            
+            

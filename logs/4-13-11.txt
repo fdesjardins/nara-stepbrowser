@@ -1,0 +1,22 @@
+4-8-2011
+4-9-2011
+4-12-2011
+4-13-2011
+
+Created a graph superclass containing most of the graphing routines. 
+New graphs need to simply initialize a number of values and provide
+an init and redraw method.
+
+Implemented node selection, and tailored node movement to work with
+node selection. Added selection tools in Edit menu. 
+
+All graphs other than context have been fully updated and are working
+nearly 100%. Added comments/reorganized. Various bugfixes. 
+
+Todo:
+
+level of detail for co-occurrence
+finish clustering configuration
+graph properties window
+graph transformations
+documentation

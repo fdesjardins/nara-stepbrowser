@@ -2,9 +2,9 @@
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QMenu, QCursor
-from PyQt4.QtCore import QPoint, QString
+from PyQt4.QtCore import QPoint, QString, Qt
 
-from contextMenu import *
+from contextMenu import ContextMenu
 
 class DraggableNode(object):
     def __init__(self, parent, name, node_num = None):
@@ -37,22 +37,38 @@ class DraggableNode(object):
         self.parent.fig.canvas.mpl_disconnect(self.cidrelease)
 
     def on_press(self, event):
-        collection = self.parent.get_artist(self.parent)
+        app = self.parent.parent.parent.parent
+        collection = self.parent.get_artist()
+        canvas_click = True
+        
+        # deselect all, and begin group select operation
+        if app.keyboardModifiers() == Qt.ShiftModifier:
+            self.parent.select_node(None)
+            self.parent.group_select('down', event.xdata, event.ydata)
+            return
+            
         for obj in collection.contains(event):
             
             if obj != True and obj != False: #obj is a dictionary
                 if len(obj['ind']) > 0:
+                    canvas_click = False
                     if str(obj['ind'][0]) == str(self.node_num):
+                        
                         if event.button == 3:
                             self.context_menu() #popup menu on right mouseclick
-                        if event.button == 2:
-                            self.press = event.xdata, event.ydata #save coords for node movement
-                        if event.button == 1:
-                            print 'Selected: '+self.name
-                            self.parent.select_node(self)
+                            
+                        elif event.button == 2:
+                            self.press = event.xdata, event.ydata #save click coords for node movement
+                            self.parent.save_selected_positions()
+                            
+                        elif event.button == 1:
+                            if app.keyboardModifiers() == Qt.ControlModifier: #add to selection
+                                self.parent.select_node(self.name, add=True)
+                            else:
+                                self.parent.select_node(self.name)
 
     def on_motion(self, event):
-        collection = self.parent.get_artist(self.parent)
+        collection = self.parent.get_artist()
         for obj in collection.contains(event):
             
             if obj != True and obj != False: #obj is a dictionary
@@ -68,9 +84,9 @@ class DraggableNode(object):
         if self.press != None:
             xpress,ypress = self.press
             # print event.xdata, event.ydata
-            self.parent.pos[self.name][0] = event.xdata
-            self.parent.pos[self.name][1] = event.ydata
-            self.parent.redraw(self.parent)
+            self.parent.move_node(self.name, xpress, ypress, event.xdata, event.ydata)
+            self.press = xpress, ypress
+            self.parent.redraw()
                     
     def on_release(self, event):
         self.press = None

@@ -16,6 +16,25 @@ class BrowserMenuBar(QtGui.QMenuBar):
         file_menu.addAction(open_action)
         file_menu.addAction(save_file_action)
         file_menu.addAction(quit_file_action)
+        
+        #Edit Menu
+        edit_menu = self.addMenu("&Edit")
+        select_all_action = self.create_action("Select &All", "Ctrl+A",
+                                               "Select all items in this window",
+                                               slot = (lambda x=0: parent.matplot_frame.g.select_all()))
+        select_none_action = self.create_action("Select &None", "Ctrl+Shift+A",
+                                                "Deselect all items in this window",
+                                                slot = (lambda x=0: parent.matplot_frame.g.select_none()))
+        select_matching_action = self.create_action("Select I&tems Matching...", "Ctrl+S",
+                                                    "Select all items in this window matching a given pattern",
+                                                    slot = (lambda x=0: parent.matplot_frame.g.select_matching()))
+        select_inverse_action = self.create_action("In&vert Selection", "Ctrl+Shift+I",
+                                                    "Select all and only the items in this window not currently selected (Can be slow)",
+                                                    slot = (lambda x=0: parent.matplot_frame.g.select_inverse()))
+        edit_menu.addAction(select_all_action)
+        edit_menu.addAction(select_none_action)
+        edit_menu.addAction(select_matching_action)
+        edit_menu.addAction(select_inverse_action)
 
         #View Menu
         view_menu = self.addMenu("&View")
@@ -23,7 +42,7 @@ class BrowserMenuBar(QtGui.QMenuBar):
                                                     slot = parent.toggle_fullscreen, checkable = True)
         grid_view_action = self.create_action("&Grid", "Ctrl+G", "Show gridlines on the current plot", 
                                                    slot = parent.matplot_frame.draw_grid, checkable = True)
-        axis_units_view_action = self.create_action("&Axis Units", "Ctrl+A", "Show axis units on the current plot",
+        axis_units_view_action = self.create_action("&Axis Units", None, "Show axis units on the current plot",
                                                          slot = parent.matplot_frame.toggle_axis_units, checkable = True)
         node_labels_view_action = self.create_action("Node &Labels", "Ctrl+L", "Show node labels on the current plot",
                                                          slot = parent.matplot_frame.toggle_node_labels, checkable = True)
@@ -35,7 +54,6 @@ class BrowserMenuBar(QtGui.QMenuBar):
         graph_properties_view_action = self.create_action("Graph &Properties", tip = "Change general graphing properties and preferences",
                                                           slot = parent.matplot_frame.toggle_node_labels, checkable = True)
         
-        
         view_menu.addAction(axis_units_view_action)
         view_menu.addAction(fullscreen_action)
         view_menu.addAction(grid_view_action)
@@ -44,23 +62,17 @@ class BrowserMenuBar(QtGui.QMenuBar):
         view_menu.addAction(clustering_config_view_action)
         view_menu.addAction(console_window_view_action)
         view_menu.addAction(graph_properties_view_action)
-        
-        
-        #Dialogs Menu
-        #dialogs_menu = self.addMenu("&Dialogs")
-        #manual_help_action = self.create_action("", "F3", "", slot = parent.manual)
-        #dialogs_menu.addAction(manual_help_action)
 
         #Help Menu
         help_menu = self.addMenu("&Help")
         manual_help_action = self.create_action("&Manual", "F3", "Open the program documentation", slot = parent.manual)
         about_help_action = self.create_action("&About", "F1", "About the file browser", slot = parent.about)
-        help_menu.addAction(manual_help_action)
+        
         help_menu.addAction(about_help_action)
-       
+        help_menu.addAction(manual_help_action)
 
     def create_action(self, text, shortcut = None, tip = None, slot = None, 
-                      checkable = False, duration = 2500, icon = None):
+                      checkable = False, duration = 3500, icon = None):
 
         action = QtGui.QAction(text, self.parent)
 

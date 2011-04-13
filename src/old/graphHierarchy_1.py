@@ -9,13 +9,13 @@ import numpy
 
 from draggableNode import DraggableNode
 
-class GraphHierarchy1(object):
+class GraphHierarchy(object):
     def __init__(self, parent = None):
         self.parent = parent
         self.status_bar = parent.status_bar
         self.axes = parent.axes
         self.fig = parent.fig
-        self.node_size_mult = (parent.slider.value()/100.0)*1500 + 100
+        self.node_size_mult = (parent.node_size.value()/100.0)*1500 + 100
 
         # Dialog for step directory if not set
         if self.parent.step_path == None:
@@ -46,7 +46,7 @@ class GraphHierarchy1(object):
 
         self.nodelist = self.Gh.nodes()
 
-        self.pos = NX.spring_layout(self.Gh)
+        self.pos = NX.spring_layout(self.Gh,scale=10)
 
         try:
             xy=numpy.asarray([self.pos[v] for v in self.nodelist])
@@ -69,7 +69,7 @@ class GraphHierarchy1(object):
         if self.parent.draw_node_labels_tf:
             NX.draw_networkx_labels(self.Gh, self.pos, ax=self.parent.axes, fontsize = 13)
         
-    def destruct(parent, self):
+    def destruct(self):
         '''Disconnects nodes from listening in the current frame'''
         [o.disconnect() for o in self.nodes]
 
@@ -100,7 +100,7 @@ class GraphHierarchy1(object):
                     out.append(os.path.join(root, f))
         return out
 
-    def get_artist(child, self):
+    def get_artist(self):
         return self.artist
 
     def is_step_file(self, fname):
@@ -109,7 +109,7 @@ class GraphHierarchy1(object):
             return True
         return False
 
-    def redraw(caller, self):
+    def redraw(self):
 
         # save transformations
         x1,x2 = self.axes.get_xlim()
