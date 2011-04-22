@@ -23,7 +23,7 @@ from graphTest import GraphTest
 from graphTestNumpy import GraphTestNumPy
 from graphHierarchy import GraphHierarchy
 from graphCoOccurrence import GraphCoOccurrence
-#from graphContext import *
+from graphContext import GraphContext
 
 
 class BrowserMatPlotFrame(QtGui.QWidget):
@@ -49,7 +49,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         #QT canvas
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self)
-        self.canvas.mpl_connect('pick_event', self.on_pick) #used when selecting canvas objects
+        self.canvas.mpl_connect('pick_event', self.on_pick) #used when selectingpyth	 canvas objects
         self.canvas.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
         
         self.axes = self.fig.add_subplot(111)
@@ -72,7 +72,7 @@ class BrowserMatPlotFrame(QtGui.QWidget):
         self.node_size = QSpinBox(self)
         self.node_size.setSingleStep(5)
         self.node_size.setMaximum(100)
-        self.node_size.setValue(20)
+        self.node_size.setValue(25)
         self.node_size_label = QLabel('Node Size (%):')
         # connection set in on_draw() method
 
@@ -138,7 +138,6 @@ class BrowserMatPlotFrame(QtGui.QWidget):
             self.g = GraphCoOccurrence(self)
 
         self.connect(self.node_size, QtCore.SIGNAL('valueChanged(int)'), self.g.set_node_mult)
-        self.node_size.emit(QtCore.SIGNAL('valueChanged()'))
         self.axes.grid(self.draw_grid_tf)
         self.canvas.draw()
         

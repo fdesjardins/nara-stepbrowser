@@ -51,8 +51,8 @@ class BrowserMenuBar(QtGui.QMenuBar):
                                                            slot = parent.cluster_config, checkable = False)
         console_window_view_action = self.create_action("&Console Window", tip = "View messages and extra information about program activities",
                                                         slot = parent.console, checkable = False)
-        graph_properties_view_action = self.create_action("Graph &Properties", tip = "Change general graphing properties and preferences",
-                                                          slot = parent.matplot_frame.toggle_node_labels, checkable = True)
+        graph_properties_view_action = self.create_action("Graph &Information", tip = "View general graphing properties and information",
+                                                          slot = parent.matplot_frame.g.graph_info, checkable = False)
         
         view_menu.addAction(axis_units_view_action)
         view_menu.addAction(fullscreen_action)

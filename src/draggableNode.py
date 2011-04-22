@@ -16,12 +16,6 @@ class DraggableNode(object):
         self.collection = None
         self.connect()
 
-    def center_on_graph(self):
-        print 'centering on graph'
-
-    def center_on_node(self):
-        print 'centering on node'
-
     def connect(self):
         self.cidpress = self.parent.fig.canvas.mpl_connect('button_press_event', self.on_press)
         self.cidmotion = self.parent.fig.canvas.mpl_connect('motion_notify_event', self.on_motion)
@@ -37,9 +31,8 @@ class DraggableNode(object):
         self.parent.fig.canvas.mpl_disconnect(self.cidrelease)
 
     def on_press(self, event):
-        app = self.parent.parent.parent.parent
+        app = self.parent.parent.parent.parent # QT application
         collection = self.parent.get_artist()
-        canvas_click = True
         
         # deselect all, and begin group select operation
         if app.keyboardModifiers() == Qt.ShiftModifier:
@@ -80,7 +73,6 @@ class DraggableNode(object):
         # 1) self.press gets set in on_press()
         # 2) self.press can only be set in one instance of DraggableNode at a time
         # 3) therefore, only the instance with self.press set will move
-        # downside: kinda slow
         if self.press != None:
             xpress,ypress = self.press
             # print event.xdata, event.ydata

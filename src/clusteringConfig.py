@@ -36,7 +36,7 @@ class ClusteringConfig(QDialog):
         vbox.addWidget(self.canvas)
         
         self.setLayout(vbox)
-        self.resize(650,250)
+        self.resize(650,350)
 
     def on_pick(self):
         print 'picked in clustering config'

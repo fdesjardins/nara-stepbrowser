@@ -80,17 +80,25 @@ class GraphHierarchy(Graph):
     def redraw(self):
         '''Redraws the current graph. Typically after a move or selection.'''
         
+        # create new node size list for selected nodes
+        selected_sizes = map(self.scaled_node_size, self.selected)
+        
         # Need to specify the functions for drawing artist (nodes) and edges during redraw
         def artist_fn(xy, axes, color='r', _alpha=0.5):
             return axes.scatter(xy[:,0], xy[:,1], self.node_sizes, c=color, alpha=_alpha)
         def edges_fn(g, pos, axes, ecolor='red'):
             return NX.draw_networkx_edges(g, pos, ax=axes, edge_color=ecolor)
+        def selected_fn(xy, axes, color='w', _alpha=0.65):
+            return axes.scatter(xy[:,0], xy[:,1], selected_sizes, c=color, alpha=_alpha)
             
-        super(GraphHierarchy, self).redraw(artist_fn, edges_fn)
+        super(GraphHierarchy, self).redraw(artist_fn, edges_fn, selected_fn)
         
     def set_node_mult(self, mult):
-        super(GraphHierarchy, self).set_node_mult(mult)
+        '''Used to decrease/increase the node size of a graph dynamically'''
+        self.node_size_mult = (mult/100.0)*1500 + 100
         self.node_sizes = map(self.scaled_node_size, self.nodelist)
+        self.status_bar.showMessage('Node Size Multiplier: '+str(self.node_size_mult), 2500)
+        self.redraw()
             
             
             

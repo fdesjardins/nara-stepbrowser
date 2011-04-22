@@ -34,7 +34,7 @@ class GraphTestNumPy(Graph):
         self.Gh = NX.Graph()
         [self.Gh.add_node(x, obj=n) for x,n in zip(self.Gh.nodes(), self.nodes)]
         [self.Gh.add_edge(e[0], e[1]) for e in self.edges]
-        self.pos = NX.spring_layout(self.Gh)    # just choose a layout scheme
+        self.pos = NX.spring_layout(self.Gh)
         self.nodelist = self.Gh.nodes()
         
         try:
@@ -64,12 +64,24 @@ class GraphTestNumPy(Graph):
     def redraw(self):
         '''Redraws the current graph. Typically after a move or selection.'''
         
+        # create new node size list for selected nodes
+        selected_sizes = map(self.scaled_node_size, self.selected)
+        
         # Need to specify the functions for drawing artist (nodes) and edges during redraw
         def artist_fn(xy, axes):
             return self.axes.scatter(xy[:,0], xy[:,1], self.node_sizes, alpha=0.6)
         def edges_fn(g, pos, axes, ecolor='red'):
             return NX.draw_networkx_edges(g, pos, ax=axes, width=1.0, alpha=.75, edge_color=self.ecolors, 
                                           edge_cmap=PLT.cm.Blues, edge_vmin = self.A.min(), edge_vmax = self.A.max())
+        def selected_fn(xy, axes, color='w', _alpha=0.65):
+            return axes.scatter(xy[:,0], xy[:,1], selected_sizes, c=color, alpha=_alpha)
             
-        super(GraphTestNumPy, self).redraw(artist_fn, edges_fn)
+        super(GraphTestNumPy, self).redraw(artist_fn, edges_fn, selected_fn)
+        
+    def set_node_mult(self, mult):
+        '''Used to decrease/increase the node size of a graph dynamically'''
+        self.node_size_mult = (mult/100.0)*1500 + 100
+        self.node_sizes = map(self.scaled_node_size, self.nodelist)
+        self.status_bar.showMessage('Node Size Multiplier: '+str(self.node_size_mult), 2500)
+        self.redraw()
         

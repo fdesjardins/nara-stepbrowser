@@ -1,0 +1,8 @@
+4-16-2011
+
+Fixed the size of the overlay to display selected nodes. Added
+the ability to transform the canvas to a selected node or a 
+selected graph. (same in the cases of co-occurrence and context graphs)
+
+Node multiplier now in the correct class, and working fully. Updated
+UI elements. Worked out bugs from moving to graph superclass.
