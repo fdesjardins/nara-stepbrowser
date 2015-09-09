@@ -9,4 +9,3 @@ if __name__=='__main__':
     form = StepBrowser(app)
     form.show()
     app.exec_()
-	
