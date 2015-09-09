@@ -16,3 +16,7 @@ files.
 * libqtgui4
 * libqtcore4
 * qt4-dev-tools
+
+## License
+
+MIT © Forrest Desjardins
