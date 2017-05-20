@@ -1,4 +1,4 @@
-# NARA STEP Browser
+# STEP File Browser
 
 A simple file browser for navigating the relationships between ISO 10303 (STEP)
 files.
